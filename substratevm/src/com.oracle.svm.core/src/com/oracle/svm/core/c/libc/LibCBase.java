@@ -31,8 +31,6 @@ import java.util.List;
 
 public interface LibCBase {
 
-    String PATH_DEFAULT = "<default>";
-
     void prepare(Path directory);
 
     List<String> getAdditionalQueryCodeCompilerOptions();

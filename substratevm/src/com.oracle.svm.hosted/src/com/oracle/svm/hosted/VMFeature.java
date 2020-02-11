@@ -54,7 +54,7 @@ public class VMFeature implements Feature {
             System.out.println("# Building image for target platform: " + ImageSingletons.lookup(Platform.class).getClass().getName());
             System.out.println("# Using native toolchain:");
             ImageSingletons.lookup(CCompilerInvoker.class).compilerInfo.dump(x -> System.out.println("#   " + x));
-            System.out.println("# Using CLibrary: " + ImageSingletons.lookup(LibCBase.class).getClass().getName());
+            System.out.println("# Using CLibrary: " + LibCBase.singleton().getClass().getName());
         }
 
         FeatureImpl.BeforeAnalysisAccessImpl access = (FeatureImpl.BeforeAnalysisAccessImpl) a;
@@ -72,7 +72,7 @@ public class VMFeature implements Feature {
     @Override
     public void afterAnalysis(AfterAnalysisAccess access) {
         addCGlobalDataString("Target.Platform", ImageSingletons.lookup(Platform.class).getClass().getName());
-        addCGlobalDataString("Target.LibC", ImageSingletons.lookup(LibCBase.class).getClass().getName());
+        addCGlobalDataString("Target.LibC", LibCBase.singleton().getClass().getName());
 
         addCGlobalDataString("Target.Libraries", String.join("|", nativeLibraries.getLibraries()));
         addCGlobalDataString("Target.StaticLibraries", nativeLibraries.getStaticLibraries().stream()

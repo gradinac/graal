@@ -453,7 +453,7 @@ public abstract class CCompilerInvoker {
             command.add(elem.toString());
         }
 
-        LibCBase currentLibc = ImageSingletons.lookup(LibCBase.class);
+        LibCBase currentLibc = LibCBase.singleton();
         command.addAll(currentLibc.getCCompilerOptions());
         return command;
     }

@@ -1483,7 +1483,7 @@ public class NativeImageGenerator {
     }
 
     private static boolean isProvidedInCurrentLibc(Method method) {
-        LibCBase currentLibC = ImageSingletons.lookup(LibCBase.class);
+        LibCBase currentLibC = LibCBase.singleton();
         Libc targetLibC = method.getAnnotation(Libc.class);
         return targetLibC == null || Arrays.asList(targetLibC.value()).contains(currentLibC.getClass());
     }
