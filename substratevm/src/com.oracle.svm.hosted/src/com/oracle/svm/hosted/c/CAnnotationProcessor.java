@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.oracle.svm.core.SubstrateUtil;
+import com.oracle.svm.core.c.libc.LibCBase;
 import com.oracle.svm.core.util.InterruptImageBuilding;
 import com.oracle.svm.core.util.UserError;
 import com.oracle.svm.core.util.VMError;
@@ -133,6 +134,9 @@ public class CAnnotationProcessor {
         }
         String fileName = fileNamePath.toString();
         Path binary = queryFile.resolveSibling(compilerInvoker.asExecutableName(fileName.substring(0, fileName.lastIndexOf("."))));
+        List<String> options = new ArrayList<>();
+        options.addAll(codeCtx.getDirectives().getOptions());
+        options.addAll(LibCBase.singleton().getAdditionalQueryCodeCompilerOptions());
         compilerInvoker.compileAndParseError(codeCtx.getDirectives().getOptions(), queryFile, binary, this::reportCompilerError, nativeLibs.debug);
         return binary;
     }

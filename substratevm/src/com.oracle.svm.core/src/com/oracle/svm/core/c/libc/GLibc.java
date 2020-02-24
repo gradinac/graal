@@ -35,12 +35,13 @@ public class GLibc implements LibCBase {
     }
 
     @Override
-    public List<String> getCCompilerOptions() {
+    public List<String> getAdditionalQueryCodeCompilerOptions() {
         return new ArrayList<>();
     }
 
     @Override
-    public List<String> getLinkerPreOptions() {
+    public List<String> getCCompilerOptions() {
         return new ArrayList<>();
     }
+
 }

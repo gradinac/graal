@@ -60,21 +60,18 @@ public class MuslLibc implements LibCBase {
     }
 
     @Override
-    public List<String> getCCompilerOptions() {
+    public List<String> getAdditionalQueryCodeCompilerOptions() {
         List<String> command = new ArrayList<>();
-        command.add("-specs");
-        command.add(getSpecFilePath().toString());
-        /* Avoid the dependency to muslc for builds cross compiling to muslc. */
-        command.add("--static");
+        command.add("-static");
         return command;
     }
 
     @Override
-    public List<String> getLinkerPreOptions() {
-        List<String> options = new ArrayList<>();
-        options.add("-specs");
-        options.add(getSpecFilePath().toString());
-        return options;
+    public List<String> getCCompilerOptions() {
+        List<String> command = new ArrayList<>();
+        command.add("-specs");
+        command.add(getSpecFilePath().toString());
+        return command;
     }
 
     public void setUpSpecFile(Path directory) {

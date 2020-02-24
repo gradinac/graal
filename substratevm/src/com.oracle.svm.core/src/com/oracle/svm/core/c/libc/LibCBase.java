@@ -24,6 +24,8 @@
  */
 package com.oracle.svm.core.c.libc;
 
+import org.graalvm.nativeimage.ImageSingletons;
+
 import java.nio.file.Path;
 import java.util.List;
 
@@ -33,7 +35,11 @@ public interface LibCBase {
 
     void prepare(Path directory);
 
+    List<String> getAdditionalQueryCodeCompilerOptions();
+
     List<String> getCCompilerOptions();
 
-    List<String> getLinkerPreOptions();
+    static LibCBase singleton() {
+        return ImageSingletons.lookup(LibCBase.class);
+    }
 }
