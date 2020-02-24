@@ -309,8 +309,6 @@ class GraalVmTool(GraalVmTruffleComponent):
 class GraalVMSvmMacro(GraalVmComponent):
     pass
 
-class GraalVMSvmStaticLib(GraalVmComponent):
-    pass
 
 class GraalVmJdkComponent(GraalVmComponent):
     pass

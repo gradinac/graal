@@ -49,11 +49,6 @@ public class MuslLibc implements LibCBase {
     private static final String PATH_PLACEHOLDER = "__BASE_PATH__";
 
     @Override
-    public String getJDKStaticLibsPath() {
-        return "musl";
-    }
-
-    @Override
     public void prepare(Path directory) {
         if (!SubstrateOptions.StaticExecutable.getValue()) {
             String useMuslCFlag = SubstrateOptionsParser.commandArgument(SubstrateOptions.UseMuslC, "+");

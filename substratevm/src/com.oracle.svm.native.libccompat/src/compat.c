@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,18 +22,23 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-package com.oracle.svm.core.c.libc;
 
-import java.nio.file.Path;
-import java.util.List;
+/* This file is used to declare symbols that a particular C standard library
+   implementation does not have, while not overriding the existing symbols */
 
-public interface LibCBase {
 
-    String PATH_DEFAULT = "<default>";
+#include <stdlib.h>
+#include <string.h>
 
-    void prepare(Path directory);
 
-    List<String> getCCompilerOptions();
-
-    List<String> getLinkerPreOptions();
+/* This function is used by libsunec, but is not provided in libmusl as it is
+   not part of the C standard. */
+char* __attribute__ ((weak)) strdup(const char *s)
+{
+    size_t len = strlen(s) + 1;
+    void *new = malloc(len);
+    if (new == NULL) {
+        return NULL;
+    }
+    return (char*) memcpy(new, s, len);
 }

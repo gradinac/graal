@@ -47,11 +47,6 @@ suite = {
             "urls" : ["https://lafo.ssw.uni-linz.ac.at/pub/graal-external-deps/dacapo-9.12-native-image.jar"],
             "sha1" : "5d534f0b7aa9124d9797a180688468d2f126039a",
         },
-
-        "JDK11_LIBMUSL_STATIC_LIBS" : {
-            "urls" : ["https://lafo.ssw.uni-linz.ac.at/pub/graal-external-deps/jdk-static-libs/labsjdk-ce-11.0.6-jvmci-20.0-b02-musl-static-libs.tar.gz"],
-            "sha1" : "59082db9e4c5a3e1fff58c9c4d7870ace5410bdb",
-        }
     },
 
     "projects": {
@@ -407,6 +402,23 @@ suite = {
                 "<others>": {
                     "<others>": {
                         "ignore": "only darwin and linux are supported",
+                    },
+                },
+            },
+        },
+
+        "com.oracle.svm.native.libccompat": {
+            "subDir": "src",
+            "native": "static_lib",
+            "os_arch": {
+                "linux": {
+                    "<others>": {
+                        "cflags": ["-fPIC", "-O1", "-D_LITTLE_ENDIAN", "-ffunction-sections", "-fdata-sections", "-fvisibility=hidden", "-D_FORTIFY_SOURCE=0"]
+                    },
+                },
+                "<others>": {
+                    "<others>": {
+                        "cflags": ["only linux is supported"],
                     },
                 },
             },
@@ -894,6 +906,7 @@ suite = {
                 "<os>-<arch>/": [
                     "dependency:com.oracle.svm.native.libchelper/*",
                     "dependency:com.oracle.svm.native.strictmath/*",
+                    "dependency:com.oracle.svm.native.libccompat/*",
                     "dependency:com.oracle.svm.native.jvm.posix/*",
                     "dependency:com.oracle.svm.native.jvm.windows/*",
                     "extracted-dependency:truffle:LIBFFI_DIST",
@@ -1049,22 +1062,6 @@ suite = {
             "description" : "Native-image based junit testing support",
             "layout" : {
                 "native-image.properties" : "file:mx.substratevm/macro-junit.properties",
-            },
-        },
-
-        "JDK11_NATIVE_IMAGE_MUSL_SUPPORT" : {
-            "native" : True,
-            "platformDependent" : True,
-            "description" : "Static JDK11 libraries required for building images with musl",
-            "javaCompliance" : "11",
-            "os_arch" : {
-                "linux" : {
-                    "amd64" : {
-                        "layout" : {
-                            "musl/" : ["extracted-dependency:substratevm:JDK11_LIBMUSL_STATIC_LIBS"],
-                        },
-                    },
-                },
             },
         },
 
