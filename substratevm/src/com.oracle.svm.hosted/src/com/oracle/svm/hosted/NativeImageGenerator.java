@@ -27,6 +27,7 @@ package com.oracle.svm.hosted;
 import static org.graalvm.compiler.replacements.StandardGraphBuilderPlugins.registerInvocationPlugins;
 
 import java.io.IOException;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -1482,9 +1483,9 @@ public class NativeImageGenerator {
         }
     }
 
-    private static boolean isProvidedInCurrentLibc(Method method) {
+    private static <T extends AnnotatedElement> boolean isProvidedInCurrentLibc(T object) {
         LibCBase currentLibC = LibCBase.singleton();
-        Libc targetLibC = method.getAnnotation(Libc.class);
+        Libc targetLibC = object.getAnnotation(Libc.class);
         return targetLibC == null || Arrays.asList(targetLibC.value()).contains(currentLibC.getClass());
     }
 
@@ -1498,24 +1499,34 @@ public class NativeImageGenerator {
             }
         }
         for (Method method : loader.findAnnotatedMethods(CFunction.class)) {
-            nativeLibs.loadJavaMethod(metaAccess.lookupJavaMethod(method));
+            if (isProvidedInCurrentLibc(method)) {
+                nativeLibs.loadJavaMethod(metaAccess.lookupJavaMethod(method));
+            }
         }
         for (Class<?> clazz : loader.findAnnotatedClasses(CStruct.class, false)) {
-            classInitializationSupport.initializeAtBuildTime(clazz, "classes annotated with " + CStruct.class.getSimpleName() + " are always initialized");
-            nativeLibs.loadJavaType(metaAccess.lookupJavaType(clazz));
+            if (isProvidedInCurrentLibc(clazz)) {
+                classInitializationSupport.initializeAtBuildTime(clazz, "classes annotated with " + CStruct.class.getSimpleName() + " are always initialized");
+                nativeLibs.loadJavaType(metaAccess.lookupJavaType(clazz));
+            }
         }
         for (Class<?> clazz : loader.findAnnotatedClasses(RawStructure.class, false)) {
-            classInitializationSupport.initializeAtBuildTime(clazz, "classes annotated with " + RawStructure.class.getSimpleName() + " are always initialized");
-            nativeLibs.loadJavaType(metaAccess.lookupJavaType(clazz));
+            if (isProvidedInCurrentLibc(clazz)) {
+                classInitializationSupport.initializeAtBuildTime(clazz, "classes annotated with " + RawStructure.class.getSimpleName() + " are always initialized");
+                nativeLibs.loadJavaType(metaAccess.lookupJavaType(clazz));
+            }
         }
         for (Class<?> clazz : loader.findAnnotatedClasses(CPointerTo.class, false)) {
-            classInitializationSupport.initializeAtBuildTime(clazz, "classes annotated with " + CPointerTo.class.getSimpleName() + " are always initialized");
-            nativeLibs.loadJavaType(metaAccess.lookupJavaType(clazz));
+            if (isProvidedInCurrentLibc(clazz)) {
+                classInitializationSupport.initializeAtBuildTime(clazz, "classes annotated with " + CPointerTo.class.getSimpleName() + " are always initialized");
+                nativeLibs.loadJavaType(metaAccess.lookupJavaType(clazz));
+            }
         }
         for (Class<?> clazz : loader.findAnnotatedClasses(CEnum.class, false)) {
-            ResolvedJavaType type = metaAccess.lookupJavaType(clazz);
-            classInitializationSupport.initializeAtBuildTime(clazz, "classes annotated with " + CEnum.class.getSimpleName() + " are always initialized");
-            nativeLibs.loadJavaType(type);
+            if (isProvidedInCurrentLibc(clazz)) {
+                ResolvedJavaType type = metaAccess.lookupJavaType(clazz);
+                classInitializationSupport.initializeAtBuildTime(clazz, "classes annotated with " + CEnum.class.getSimpleName() + " are always initialized");
+                nativeLibs.loadJavaType(type);
+            }
         }
         for (Class<?> clazz : loader.findAnnotatedClasses(CContext.class, false)) {
             classInitializationSupport.initializeAtBuildTime(clazz, "classes annotated with " + CContext.class.getSimpleName() + " are always initialized");

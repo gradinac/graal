@@ -24,6 +24,8 @@
  */
 package com.oracle.svm.core.posix.headers;
 
+import com.oracle.svm.core.c.libc.GLibc;
+import com.oracle.svm.core.c.libc.Libc;
 import org.graalvm.nativeimage.Platform;
 import org.graalvm.nativeimage.Platforms;
 import org.graalvm.nativeimage.c.CContext;
@@ -102,6 +104,7 @@ public class Dlfcn {
         public interface Lmid_t extends SignedWord {
         }
 
+        @Libc(GLibc.class)
         @CTypedefOfInfo("long int")
         @CPointerTo(nameOfCType = "Lmid_t")
         public interface Lmid_tPointer extends PointerBase {
@@ -109,11 +112,14 @@ public class Dlfcn {
         }
 
         @CConstant
+        @Libc(GLibc.class)
         public static native int RTLD_DI_LMID();
 
+        @Libc(GLibc.class)
         @CConstant
         public static native int LM_ID_NEWLM();
 
+        @Libc(GLibc.class)
         @CConstant
         public static native int LM_ID_BASE();
 

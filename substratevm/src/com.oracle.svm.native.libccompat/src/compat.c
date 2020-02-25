@@ -33,7 +33,7 @@
 
 /* This function is used by libsunec, but is not provided in libmusl as it is
    not part of the C standard. */
-char* __attribute__ ((weak)) strdup(const char *s)
+char* __attribute__ ((weak)) __strdup(const char *s)
 {
     size_t len = strlen(s) + 1;
     void *new = malloc(len);
